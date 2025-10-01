@@ -1,12 +1,35 @@
 {
   "name": "@pulsegrid/types",
   "version": "1.0.0",
-  "description": "",
+  "description": "Shared TypeScript type definitions for PulseGrid platform",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js",
+      "require": "./index.js"
+    }
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "files": [
+    "index.d.ts",
+    "index.js",
+    "types/**/*.d.ts"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "echo \"Test script to be implemented\"",
+    "clean": "rm -rf dist"
+  },
+  "keywords": ["types", "typescript", "healthcare", "definitions"],
+  "author": "PulseGrid Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5"
+  }
 }

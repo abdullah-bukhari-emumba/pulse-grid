@@ -1,16 +1,38 @@
 {
   "name": "@pulsegrid/ui",
   "version": "1.0.0",
-  "description": "",
+  "description": "Shared UI component library for PulseGrid platform",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+  "module": "index.esm.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.esm.js",
+      "require": "./index.js",
+      "types": "./index.d.ts"
+    }
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "files": [
+    "dist",
+    "index.js",
+    "index.esm.js",
+    "index.d.ts"
+  ],
+  "scripts": {
+    "build": "echo \"Build script to be implemented\"",
+    "dev": "echo \"Dev script to be implemented\"",
+    "test": "echo \"Test script to be implemented\"",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "clean": "rm -rf dist storybook-static"
+  },
+  "keywords": ["ui", "components", "react", "healthcare", "design-system"],
+  "author": "PulseGrid Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  },
   "devDependencies": {
     "@storybook/addon-docs": "9.1.8",
     "@storybook/addon-onboarding": "9.1.8",

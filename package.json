@@ -1,10 +1,13 @@
 {
   "name": "plusegrid",
+  "version": "1.0.0",
+  "description": "PulseGrid - Modern healthcare platform with micro-frontend architecture",
   "private": true,
-  "pnpm": {
-    "overrides": {
-      "esbuild": "0.25.10"
-    }
+  "author": "Abdullah T Bukhari",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/pulse-grid.git"
   },
   "workspaces": [
     "apps/*",
@@ -13,9 +16,21 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "start": "turbo run start",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
+    "lint:fix": "turbo run lint:fix",
+    "type-check": "turbo run type-check",
+    "test": "turbo run test",
+    "clean": "turbo run clean && rm -rf node_modules/.cache .turbo",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\"",
+    "storybook": "turbo run storybook --filter=@pulsegrid/ui",
+    "prepare": "husky install || true"
+  },
+  "pnpm": {
+    "overrides": {
+      "esbuild": "0.25.10"
+    }
   },
   "devDependencies": {
     "@module-federation/nextjs-mf": "^8.8.41",

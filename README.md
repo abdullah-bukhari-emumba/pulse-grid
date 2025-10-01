@@ -1,135 +1,146 @@
-# Turborepo starter
+# PulseGrid
 
-This Turborepo starter is maintained by the Turborepo core team.
+A modern healthcare platform built with **Turborepo**, **Next.js**, and **Module Federation** architecture.
 
-## Using this example
+## 🏗️ Architecture
 
-Run the following command:
+This monorepo implements a micro-frontend architecture using Webpack Module Federation, enabling independent development and deployment of healthcare modules.
 
-```sh
-npx create-turbo@latest
+### Project Structure
+
+```
+plusegrid/
+├── apps/
+│   ├── dashboard-shell/          # Host application (Shell)
+│   └── clinical-flags-mfe/       # Clinical flags micro-frontend
+├── packages/
+│   ├── ui/                       # Shared UI components with Storybook
+│   ├── types/                    # Shared TypeScript definitions
+│   └── config-custom/            # Shared configuration files
+└── docs/                         # Documentation (if applicable)
 ```
 
-## What's inside?
+## 🚀 Quick Start
 
-This Turborepo includes the following packages/apps:
+### Prerequisites
 
-### Apps and Packages
+- **Node.js** >= 18.0.0
+- **pnpm** >= 9.0.0 (recommended package manager)
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### Installation
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+```bash
+# Clone the repository
+git clone <repository-url>
+cd plusegrid
 
-### Utilities
+# Install dependencies
 
-This Turborepo has some additional tools already setup for you:
+npm i pnpm -g
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+pnpm install
+```
+
+### Development
+
+```bash
+# Start all applications in development mode
+pnpm dev
+
+# Start specific applications
+pnpm dev --filter=dashboard-shell
+pnpm dev --filter=clinical-flags-mfe
+
+# View UI components in Storybook
+pnpm --filter @pulsegrid/ui storybook
+```
 
 ### Build
 
-To build all apps and packages, run the following command:
+```bash
+# Build all applications
+pnpm build
 
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+# Build specific application
+pnpm build --filter=dashboard-shell
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+## 📦 Applications & Packages
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+### Applications
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+| Application | Port | Description | Status |
+|-------------|------|-------------|--------|
+| `dashboard-shell` | 3000 | Main host application | 🟢 Active |
+| `clinical-flags-mfe` | 3001 | Clinical flags micro-frontend | 🟢 Active |
 
-### Develop
+### Packages
 
-To develop all apps and packages, run the following command:
+| Package | Description | Version |
+|---------|-------------|---------|
+| `@pulsegrid/ui` | Shared UI component library | 1.0.0 |
+| `@pulsegrid/types` | TypeScript type definitions | 1.0.0 |
+| `@pulsegrid/config-custom` | Shared configurations | 1.0.0 |
 
-```
-cd my-turborepo
+## 🔧 Development Workflow
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+### Code Quality & Standards
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+- **TypeScript** for type safety
+- **ESLint** for code linting
+- **Prettier** for code formatting
+- **Turborepo** for efficient builds and caching
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### Available Scripts
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+```bash
+# Development
+pnpm dev                    # Start all apps in development
+pnpm build                  # Build all applications
+pnpm lint                   # Lint all packages
+pnpm format                 # Format code with Prettier
+pnpm check-types           # Type check all packages
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+# Testing (when implemented)
+pnpm test                   # Run all tests
+pnpm test:watch            # Run tests in watch mode
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+## 🌐 Module Federation
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+This project leverages **Webpack Module Federation** to enable:
+
+- **Independent Development**: Each micro-frontend can be developed independently
+- **Runtime Integration**: Components are loaded dynamically at runtime
+- **Shared Dependencies**: Common libraries are shared between applications
+- **Scalable Architecture**: Easy to add new micro-frontends
+
+### Architecture Flow
 
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+Dashboard Shell (Host)
+├── Consumes: Clinical Flags MFE
+├── Consumes: Future MFEs
+└── Provides: Shell Layout & Navigation
 ```
 
-## Useful Links
+## 📱 Access Points
 
-Learn more about the power of Turborepo:
+- **Dashboard Shell**: [http://localhost:3000](http://localhost:3000)
+- **Clinical Flags MFE**: [http://localhost:3001](http://localhost:3001)
+- **Storybook**: [http://localhost:6006](http://localhost:6006)
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+## 🤝 Contributing
+
+1. Follow the established code style and conventions
+2. Ensure all tests pass before submitting PRs
+3. Update documentation for any new features
+4. Use conventional commit messages
+
+## 📄 License
+
+[Add your license information here]
+
+---
+
+**Built with ❤️ for Healthcare Innovation**

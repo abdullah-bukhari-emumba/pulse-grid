@@ -1,12 +1,25 @@
 {
   "name": "@pulsegrid/config-custom",
   "version": "1.0.0",
-  "description": "",
+  "description": "Shared configuration files for PulseGrid platform",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "exports": {
+    "./eslint": "./eslint-preset.js",
+    "./typescript": "./tsconfig.base.json"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "files": [
+    "eslint-preset.js",
+    "tsconfig.base.json"
+  ],
+  "scripts": {
+    "test": "echo \"Test script to be implemented\"",
+    "clean": "echo \"Clean script to be implemented\""
+  },
+  "keywords": ["config", "eslint", "typescript", "shared", "preset"],
+  "author": "PulseGrid Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  }
 }
