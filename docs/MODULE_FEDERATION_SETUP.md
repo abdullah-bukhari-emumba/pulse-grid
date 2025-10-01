@@ -30,25 +30,40 @@ This document provides a comprehensive guide to the Module Federation implementa
 
 ```
 apps/
-├── dashboard-shell/                 # HOST APPLICATION
+├── dashboard-shell/                 # HOST APPLICATION (Pages Router)
 │   ├── next.config.ts              # Module Federation host config
 │   ├── src/
-│   │   ├── app/page.tsx            # Main page using MFE demo
+│   │   ├── pages/                  # Pages Router structure
+│   │   │   ├── _app.tsx            # Application root component
+│   │   │   ├── _document.tsx       # HTML document structure
+│   │   │   └── index.tsx           # Home page using MFE demo
+│   │   ├── styles/
+│   │   │   └── globals.css         # Global styles
 │   │   ├── components/
 │   │   │   └── SimpleMFEDemo.tsx   # Demo component consuming MFE
 │   │   └── types/
 │   │       └── module-federation.d.ts # TypeScript declarations
 │   └── package.json                # Port 3003 configuration
 │
-└── clinical-flags-mfe/             # REMOTE APPLICATION
+└── clinical-flags-mfe/             # REMOTE APPLICATION (Pages Router)
     ├── next.config.ts              # Module Federation remote config
     ├── src/
+    │   ├── pages/                  # Pages Router structure
+    │   │   ├── _app.tsx            # MFE application root
+    │   │   ├── _document.tsx       # MFE HTML document structure
+    │   │   └── index.tsx           # MFE standalone demo page
+    │   ├── styles/
+    │   │   └── globals.css         # MFE global styles
     │   └── components/
     │       └── ClinicalFlagsWidget.tsx # Exposed component
     └── package.json                # Port 3002 configuration
 ```
 
 ## ⚙️ Configuration Details
+
+### Pages Router Migration Note
+
+**IMPORTANT:** Both applications have been migrated from App Router to Pages Router to ensure compatibility with the `@module-federation/nextjs-mf` plugin. The plugin does not support Next.js App Router and requires the traditional Pages Router architecture.
 
 ### Host Configuration (dashboard-shell)
 

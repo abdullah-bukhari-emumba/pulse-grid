@@ -5,15 +5,19 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /**
-   * Module Federation Configuration for Clinical Flags MFE (REMOTE)
+   * Module Federation Configuration for Clinical Flags MFE (REMOTE) - Pages Router
    * 
    * This configuration sets up the clinical-flags-mfe as a Module Federation remote
    * that exposes components for consumption by the host application (dashboard-shell).
+   * 
+   * IMPORTANT: Uses Pages Router architecture (src/pages/) for Module Federation compatibility.
+   * The @module-federation/nextjs-mf plugin requires Pages Router and does not support App Router.
    * 
    * Key components of this configuration:
    * - Exposes: Defines which components are available for external consumption
    * - Shared: Manages shared dependencies to prevent duplication and version conflicts
    * - Runtime: Handles dynamic loading and dependency resolution
+   * - Pages Router: Ensures compatibility with Module Federation plugin requirements
    */
   webpack(config, options) {
     const { isServer } = options;

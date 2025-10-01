@@ -5,15 +5,19 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /**
-   * Module Federation Configuration for Dashboard Shell (HOST)
+   * Module Federation Configuration for Dashboard Shell (HOST) - Pages Router
    * 
    * This configuration sets up the dashboard-shell as a Module Federation host
    * that can dynamically consume remote micro-frontends at runtime.
+   * 
+   * IMPORTANT: Uses Pages Router architecture (src/pages/) for Module Federation compatibility.
+   * The @module-federation/nextjs-mf plugin requires Pages Router and does not support App Router.
    * 
    * Key components of this configuration:
    * - Remotes: Defines which remote micro-frontends are available for consumption
    * - Shared: Manages shared dependencies to prevent duplication and ensure compatibility
    * - Runtime: Handles dynamic loading, dependency resolution, and error isolation
+   * - Pages Router: Ensures compatibility with Module Federation plugin requirements
    */
   webpack(config, options) {
     const { isServer } = options;
