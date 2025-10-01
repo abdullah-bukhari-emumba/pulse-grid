@@ -33,6 +33,9 @@ importers:
       '@welldone-software/why-did-you-render':
         specifier: ^10.0.1
         version: 10.0.1(react@19.1.0)
+      husky:
+        specifier: ^9.1.7
+        version: 9.1.7
       jest:
         specifier: ^30.2.0
         version: 30.2.0(@types/node@20.19.18)(esbuild-register@3.6.0(esbuild@0.25.10))
@@ -51,6 +54,12 @@ importers:
 
   apps/clinical-flags-mfe:
     dependencies:
+      '@pulsegrid/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@pulsegrid/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       next:
         specifier: 15.5.4
         version: 15.5.4(@babel/core@7.28.4)(@playwright/test@1.55.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -76,6 +85,9 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.1.9(@types/react@19.1.16)
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       eslint:
         specifier: ^9
         version: 9.36.0(jiti@2.6.0)
@@ -88,9 +100,18 @@ importers:
       typescript:
         specifier: ^5
         version: 5.9.2
+      webpack:
+        specifier: ^5.95.0
+        version: 5.102.0(esbuild@0.25.10)
 
   apps/dashboard-shell:
     dependencies:
+      '@pulsegrid/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@pulsegrid/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       next:
         specifier: 15.5.4
         version: 15.5.4(@babel/core@7.28.4)(@playwright/test@1.55.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -116,6 +137,9 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.1.9(@types/react@19.1.16)
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       eslint:
         specifier: ^9
         version: 9.36.0(jiti@2.6.0)
@@ -128,10 +152,17 @@ importers:
       typescript:
         specifier: ^5
         version: 5.9.2
+      webpack:
+        specifier: ^5.95.0
+        version: 5.102.0(esbuild@0.25.10)
 
   packages/config-custom: {}
 
-  packages/types: {}
+  packages/types:
+    devDependencies:
+      typescript:
+        specifier: ^5
+        version: 5.9.2
 
   packages/ui:
     devDependencies:
@@ -2181,6 +2212,11 @@ packages:
     resolution: {integrity: sha512-p0SaNjrHOnQeR8/VnfGbmg9te2kfyYSQ7Sc/j/6DtPL3JQvKxmjO9TSjNFpujqV3vEYYBvNNvXSxzyksBWAx1Q==}
     engines: {node: '>=12.0.0'}
 
+  cross-env@7.0.3:
+    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
+    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
+    hasBin: true
+
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
@@ -2951,6 +2987,11 @@ packages:
   human-signals@2.1.0:
     resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
     engines: {node: '>=10.17.0'}
+
+  husky@9.1.7:
+    resolution: {integrity: sha512-5gs5ytaNjBrh5Ow3zrvdUUY+0VxIuWVL4i9irt6friV+BqdCfmV11CQTWMiBYWHbXhco+J1kHfTOUkePhCDvMA==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   iconv-lite@0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
@@ -6971,6 +7012,10 @@ snapshots:
     dependencies:
       luxon: 3.7.2
 
+  cross-env@7.0.3:
+    dependencies:
+      cross-spawn: 7.0.6
+
   cross-spawn@7.0.6:
     dependencies:
       path-key: 3.1.1
@@ -7932,6 +7977,8 @@ snapshots:
       - supports-color
 
   human-signals@2.1.0: {}
+
+  husky@9.1.7: {}
 
   iconv-lite@0.6.3:
     dependencies:

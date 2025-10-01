@@ -31,6 +31,10 @@ const nextConfig: NextConfig = {
           // This distinguishes this host from other potential hosts in the ecosystem
           name: 'dashboardShell',
           
+          // IMPORTANT: Host applications should NOT have a filename property
+          // Only remote applications expose a filename for their remoteEntry.js
+          // The filename property is automatically handled by the plugin for hosts
+          
           /**
            * Remotes Configuration
            * Defines which remote micro-frontends are available for consumption
