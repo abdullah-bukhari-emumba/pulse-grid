@@ -1,6 +1,15 @@
 'use client';
 
-import React, { Suspense, lazy, useState, useCallback } from 'react';
+import React, { Suspense, useState, useCallback } from 'react';
+import dynamic from 'next/dynamic';
+
+// Local duplicate of remote prop types (lightweight) to satisfy TS when using next/dynamic wrapper
+interface ClinicalFlagsWidgetProps {
+  patientId?: string;
+  onFlagClick?: (flag: { message: string }) => void;
+  flags?: { id: string; type: string; message: string; timestamp: string; patientId: string }[];
+  className?: string;
+}
 
 /**
  * Simple Micro-Frontend Demo Component
@@ -20,12 +29,20 @@ const MFEFallback: React.FC = () => (
   </div>
 );
 
-// Lazy load the remote micro-frontend component
-const ClinicalFlagsWidget = lazy(() => 
-  // @ts-expect-error - Module Federation types are resolved at runtime
-  import('clinicalFlagsMfe/ClinicalFlagsWidget').catch(() => ({ 
-    default: MFEFallback 
-  }))
+// Dynamically load remote MFE only on client. Using next/dynamic with ssr:false prevents
+// server from attempting to resolve the federated spec (eliminating hook runtime mismatch issues).
+// We wrap in a factory to provide a graceful fallback when remote fails.
+const ClinicalFlagsWidget = dynamic<ClinicalFlagsWidgetProps>(
+  async () => {
+    try {
+      // @ts-expect-error - runtime federation resolution
+      const mod = await import('clinicalFlagsMfe/ClinicalFlagsWidget');
+      return mod;
+    } catch {
+      return MFEFallback;
+    }
+  },
+  { ssr: false, loading: () => <LoadingComponent /> }
 );
 
 // Loading component while MFE loads
@@ -99,11 +116,9 @@ const SimpleMFEDemo: React.FC = () => {
       {/* Micro-Frontend Component */}
       <div className="space-y-4">
         <h2 className="text-xl font-semibold">🧩 Clinical Flags MFE</h2>
+        {/* Suspense retained in case future nested lazy components exist inside remote */}
         <Suspense fallback={<LoadingComponent />}>
-          <ClinicalFlagsWidget
-            patientId={selectedPatient}
-            onFlagClick={handleFlagClick}
-          />
+          <ClinicalFlagsWidget patientId={selectedPatient} onFlagClick={handleFlagClick} />
         </Suspense>
       </div>
 

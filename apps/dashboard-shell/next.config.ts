@@ -21,9 +21,9 @@ const nextConfig: NextConfig = {
    */
   webpack(config, options) {
     const { isServer } = options;
-    
-    // Apply Module Federation only to client-side builds
-    // Server-side rendering doesn't support Module Federation due to runtime limitations
+
+    // Apply Module Federation only to client build; server bundle will NOT attempt to load remote
+    // because we gate the remote import behind next/dynamic with ssr:false in client components.
     if (!isServer) {
       config.plugins.push(
         new NextFederationPlugin({
@@ -47,11 +47,10 @@ const nextConfig: NextConfig = {
            */
           remotes: {
             // Clinical Flags MFE - provides clinical alert and warning components
-            // Development URL points to the MFE running on localhost:3002
-            // Production URL should point to the deployed MFE instance
+            // Dev: static remote URL; Prod: placeholder to be replaced with deployed URL or env.
             clinicalFlagsMfe: process.env.NODE_ENV === 'development'
               ? 'clinicalFlagsMfe@http://localhost:3002/_next/static/chunks/remoteEntry.js'
-              : 'clinicalFlagsMfe@https://clinical-flags-mfe.your-domain.com/_next/static/chunks/remoteEntry.js',
+              : (process.env.CLINICAL_FLAGS_MFE_URL || 'clinicalFlagsMfe@https://clinical-flags-mfe.your-domain.com/_next/static/chunks/remoteEntry.js'),
           },
           
           /**
