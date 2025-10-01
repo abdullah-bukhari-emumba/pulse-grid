@@ -31,9 +31,10 @@ const nextConfig: NextConfig = {
           // This distinguishes this host from other potential hosts in the ecosystem
           name: 'dashboardShell',
           
-          // IMPORTANT: Host applications should NOT have a filename property
-          // Only remote applications expose a filename for their remoteEntry.js
-          // The filename property is automatically handled by the plugin for hosts
+          // WORKAROUND: Some versions of @module-federation/nextjs-mf require filename even for hosts
+          // This is unusual but required by version 8.8.41 to prevent "filename is not defined" error
+          // The filename for hosts is typically not used since they don't expose modules
+          filename: 'static/chunks/hostEntry.js',
           
           /**
            * Remotes Configuration
