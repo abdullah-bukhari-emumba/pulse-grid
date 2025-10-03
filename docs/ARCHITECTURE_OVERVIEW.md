@@ -12,6 +12,12 @@ We have accepted a hybrid that is App Router–first with a client-only runtime 
 * Chart MFE: Built as a Webpack Module Federation remote (remoteEntry.js). Loaded from the host via a client-only runtime MF loader (no Next host plugin). Runtime share scope negotiates React/UI singletons; wrapped in ErrorBoundary.
 * KPI Status: Architecture chosen to satisfy all KPIs: virtualization, state architecture, compound form, testing, App Router + RSC/streaming, and “with module federation” via the chart island.
 
+#### Why this final choice
+- We tested server-side federation and hit React runtime duplication issues; client-only consumption was stable.
+- App Router + RSC pairs best with minimizing host-side build-time federation; a client-only MF island preserves KPI compliance while avoiding SSR pitfalls.
+- Multi-Zones give clean route-level isolation for the form without interfering with RSC adoption.
+- Monorepo packages provide compile-time cohesion; the MF share scope provides runtime shared-deps for the chart.
+
 ### 2. Key Constraints & Realities
 * React Server Components (RSC) + Module Federation (MF) integration is still evolving in the ecosystem; stable tooling favors Pages Router for MF plugin.
 * We need BOTH: (a) MFE demonstration AND (b) RSC streaming for data-heavy pages.
@@ -77,6 +83,14 @@ Revisit hybrid + client-only federation if ANY of:
 * ADR-007 Multi-Zones vs Module Federation Contingency
 * ADR-008 Micro-Frontend Strategy Options (Federation, Zones, Loader)
 * ADR-009 Final Architecture and KPI Delivery Plan (Accepted)
+
+### 11. Decision History (Short)
+We explored and documented multiple avenues:
+- Client-only federation (working) and attempted server federation (failed due to React mismatch) → ADR-002.
+- Deprecation and risk assessment for nextjs-mf → ADR-006.
+- Multi-Zones trade-offs and fit → ADR-007.
+- Comprehensive options matrix (A–G) → ADR-008.
+This final architecture (ADR-009) synthesizes App Router + RSC with a runtime MF island and a zone-based form to meet all KPIs with the least risk.
 
 ### 10. Guiding Principles
 1. Ship meaningful vertical slices; avoid speculative abstraction.

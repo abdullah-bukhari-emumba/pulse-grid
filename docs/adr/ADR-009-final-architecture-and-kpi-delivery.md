@@ -75,3 +75,37 @@ This combination satisfies all KPIs while minimizing risk from the deprecating N
 
 ---
 Final Decision: Accepted. Proceed to implement as outlined above.
+
+## 10. Decision History & Experiments (Evidence of Due Diligence)
+
+Chronology of options considered and trials performed to reach this decision:
+
+1) Initial Module Federation (client-only) success, but SSR attempt failed
+- We first wired Module Federation with the Next plugin only on the client side; the remote loaded via dynamic import in the browser and worked reliably.
+- When we enabled the federation plugin for the server build, we encountered runtime hook failures (e.g., `TypeError: Cannot read properties of null (reading 'useState')`), consistent with duplicate/mis-initialized React share scopes in SSR paths.
+- Action: Reverted to client-only federation to regain stability and documented the limitation in ADR-002.
+
+2) Stabilized client-only federation usage
+- Switched to `next/dynamic(..., { ssr:false })` around the federated component to avoid server resolution, added fallbacks and error boundaries.
+- Verified host → remote prop passing; improved remote UI; documented rationale and constraints.
+
+3) Assessed ecosystem direction and deprecation risk
+- Identified public deprecation/maintenance-only direction for `nextjs-mf` usage patterns; captured risks and mitigation in ADR-006.
+- Concluded we should minimize dependence on build-time federation in the host, especially for App Router + RSC.
+
+4) Evaluated Multi-Zones (route-level MFE) as a complementary/fallback
+- Analyzed official Next.js Multi-Zones to achieve independent deployability by path; documented capabilities and limits (no component-level embedding, no runtime shared-deps negotiation) in ADR-007.
+- Determined zones are excellent for the Encounter Form (route-level isolation) but insufficient alone to satisfy the federation clause.
+
+5) Enumerated full strategy landscape
+- Cataloged seven options (A–G) in ADR-008: client-only MF, pure zones, hybrid, manual loader, enhanced SSR MF, dual-path migration, and KPI amendment.
+- Weighing literal KPI compliance, risk, complexity, and RSC compatibility, the hybrid App Router host + runtime-only MF island + zone for form emerged as the best fit.
+
+6) Final synthesis for App Router compatibility and KPI fidelity
+- To keep App Router pure (no Pages Router in host) and still satisfy "with module federation + shared dependency management," we chose a runtime-only MF consumption model in a client island (no Next host plugin). The remote remains a standard Webpack MF build exposing `remoteEntry.js` and participates in the share scope for React/UI singletons.
+- For the form, we use Multi-Zones to guarantee independent deployability and page-level isolation.
+
+Evidence of breadth and effort
+- Options considered: 7 (ADR-008). Deep analysis recorded in ADR-006/007/008.
+- Experiments executed: client-only federation baseline; attempted SSR federation (rolled back); dynamic import vs Next dynamic with SSR disabled; host→remote prop pass; UI fallback; error boundary hardening.
+- Decision drivers and trade-offs explicitly captured across ADR-001..009 and summarized here.
