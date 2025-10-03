@@ -9,6 +9,7 @@ interface ClinicalFlagsWidgetProps {
   onFlagClick?: (flag: { message: string }) => void;
   flags?: { id: string; type: string; message: string; timestamp: string; patientId: string }[];
   className?: string;
+  displayName?: string; // new prop to demonstrate host->remote communication
 }
 
 /**
@@ -65,6 +66,7 @@ const LoadingComponent: React.FC = () => (
 
 const SimpleMFEDemo: React.FC = () => {
   const [selectedPatient, setSelectedPatient] = useState('demo-patient-001');
+  const [displayName, setDisplayName] = useState('Dr. Alice HostRender');
 
   // Sample patients
   const patients = [
@@ -78,62 +80,62 @@ const SimpleMFEDemo: React.FC = () => {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-6">
-      {/* Header */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border">
-        <h1 className="text-2xl font-bold mb-2">🏥 Module Federation Demo</h1>
-        <p className="text-gray-600">
-          Demonstrating dynamic loading of Clinical Flags micro-frontend
-        </p>
-      </div>
+    <main className="mx-auto flex max-w-5xl flex-col gap-6 p-6">
+      <header className="flex flex-col gap-1">
+        <h1 className="text-xl font-semibold text-gray-900">Module Federation Demo</h1>
+        <p className="text-sm text-gray-500">Host ↔ Remote communication (simple, minimal UI)</p>
+      </header>
 
-      {/* Patient Selector */}
-      <div className="bg-white p-4 rounded-lg shadow-sm border">
-        <label className="block text-sm font-medium mb-2">Select Patient:</label>
-        <select
-          value={selectedPatient}
-          onChange={(e) => setSelectedPatient(e.target.value)}
-          className="px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      <section className="grid gap-6 md:grid-cols-2">
+        <form
+          className="rounded-md border border-gray-200 bg-white p-4 shadow-sm"
+          onSubmit={(e) => e.preventDefault()}
+          aria-label="Host Controls"
         >
-          {patients.map(patient => (
-            <option key={patient.id} value={patient.id}>
-              {patient.name} ({patient.id})
-            </option>
-          ))}
-        </select>
-      </div>
+          <h2 className="mb-4 text-sm font-medium tracking-wide text-gray-700">Host Controls</h2>
+          <div className="space-y-4">
+            <div>
+              <label className="mb-1 block text-xs font-medium uppercase text-gray-500">Patient</label>
+              <select
+                value={selectedPatient}
+                onChange={(e) => setSelectedPatient(e.target.value)}
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-400"
+              >
+                {patients.map(p => (
+                  <option key={p.id} value={p.id}>{p.name} ({p.id})</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium uppercase text-gray-500">Display Name Sent to Remote</label>
+              <input
+                type="text"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 placeholder-gray-400"
+                placeholder="e.g. Nurse Jenny"
+              />
+              <p className="mt-1 text-[11px] text-gray-500">Clear this field to show full flag list in remote.</p>
+            </div>
+            <div className="rounded-md bg-gray-50 p-2 text-[11px] leading-relaxed text-gray-600">
+              Remote: <code className="font-mono">clinical-flags-mfe</code><br />
+              Component: <code className="font-mono">ClinicalFlagsWidget</code>
+            </div>
+          </div>
+        </form>
 
-      {/* MFE Status */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h3 className="text-blue-800 font-semibold mb-2">🔗 Federation Status</h3>
-        <div className="text-sm text-blue-700 space-y-1">
-          <p><strong>Host:</strong> dashboard-shell (localhost:3003)</p>
-          <p><strong>Remote:</strong> clinical-flags-mfe (localhost:3002)</p>
-          <p><strong>Component:</strong> ClinicalFlagsWidget</p>
+        <div className="rounded-md border border-gray-200 bg-white p-4 shadow-sm" aria-label="Remote Output">
+          <h2 className="sr-only">Remote Output</h2>
+          <Suspense fallback={<LoadingComponent />}>
+            <ClinicalFlagsWidget
+              patientId={selectedPatient}
+              onFlagClick={handleFlagClick}
+              displayName={displayName}
+            />
+          </Suspense>
         </div>
-      </div>
-
-      {/* Micro-Frontend Component */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">🧩 Clinical Flags MFE</h2>
-        {/* Suspense retained in case future nested lazy components exist inside remote */}
-        <Suspense fallback={<LoadingComponent />}>
-          <ClinicalFlagsWidget patientId={selectedPatient} onFlagClick={handleFlagClick} />
-        </Suspense>
-      </div>
-
-      {/* Implementation Notes */}
-      <div className="bg-gray-50 border rounded-lg p-4 text-sm">
-        <h3 className="font-semibold mb-2">🔧 Implementation Details</h3>
-        <ul className="space-y-1 text-gray-700 list-disc list-inside">
-          <li>Dynamic import via Module Federation</li>
-          <li>Error isolation with fallback component</li>
-          <li>Suspense loading states</li>
-          <li>Shared React dependencies</li>
-          <li>Independent deployability</li>
-        </ul>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 };
 

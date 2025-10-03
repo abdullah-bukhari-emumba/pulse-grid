@@ -27,6 +27,11 @@ interface ClinicalFlagsWidgetProps {
   flags?: ClinicalFlag[];
   onFlagClick?: (flag: ClinicalFlag) => void;
   className?: string;
+  /**
+   * Optional displayName sent by host to demonstrate cross-boundary communication.
+   * When provided, widget will render a simple name-only view (demo mode) instead of full flags.
+   */
+  displayName?: string;
 }
 
 const ClinicalFlagsWidget: React.FC<ClinicalFlagsWidgetProps> = ({
@@ -55,7 +60,8 @@ const ClinicalFlagsWidget: React.FC<ClinicalFlagsWidgetProps> = ({
     }
   ],
   onFlagClick,
-  className = ''
+  className = '',
+  displayName
 }) => {
   const getTypeIcon = (type: ClinicalFlag['type']) => {
     switch (type) {
@@ -92,75 +98,70 @@ const ClinicalFlagsWidget: React.FC<ClinicalFlagsWidgetProps> = ({
     });
   };
 
+  // Demo short-circuit: if displayName provided, show only name echo (communication proof)
+  if (displayName) {
+    return (
+      <section
+        aria-label="Clinical Flags Communication Demo"
+        className={`clinical-flags-widget rounded-md border border-gray-200 bg-white p-4 ${className}`}
+      >
+        <header className="mb-3 flex items-center justify-between">
+          <h3 className="text-base font-semibold text-gray-900">Remote Widget</h3>
+          <span className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600">MFE</span>
+        </header>
+  <p className="text-xs uppercase tracking-wide text-gray-900 mb-1">Display Name</p>
+  <p className="text-lg font-medium text-gray-900" data-testid="display-name">{displayName}</p>
+        <p className="mt-4 text-[11px] text-gray-500 leading-relaxed">
+          Value above was passed from the host shell. Remove the name in host to view full flag list.
+        </p>
+      </section>
+    );
+  }
+
   return (
-    <div className={`clinical-flags-widget p-4 bg-white rounded-lg shadow-sm border border-gray-200 ${className}`}>
-      {/* Widget Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-          🏥 Clinical Flags
-          <span className="text-sm font-normal text-gray-500">
-            ({flags.length} active)
-          </span>
-        </h3>
-        <span className="text-xs text-gray-400 font-mono">
-          Patient: {patientId}
-        </span>
-      </div>
+    <section
+      aria-label="Clinical Flags"
+      className={`clinical-flags-widget rounded-md border border-gray-200 bg-white p-4 ${className}`}
+    >
+      <header className="mb-3 flex items-start justify-between gap-2">
+        <div>
+          <h3 className="text-base font-semibold text-gray-900">Clinical Flags</h3>
+          <p className="text-xs text-gray-500 mt-0.5">Patient {patientId} • {flags.length} active</p>
+        </div>
+        <span className="rounded bg-gray-100 px-2 py-0.5 text-[10px] font-medium tracking-wide text-gray-600">MFE</span>
+      </header>
 
-      {/* Flags List */}
-      <div className="space-y-3">
-        {flags.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            <span className="text-2xl mb-2 block">✅</span>
-            <p>No clinical flags for this patient</p>
-          </div>
-        ) : (
-          flags.map((flag) => (
-            <div
-              key={flag.id}
-              className={`
-                p-3 rounded-lg border-l-4 transition-all duration-200 cursor-pointer
-                hover:shadow-md hover:scale-[1.02] active:scale-[0.98]
-                ${getTypeStyles(flag.type)}
-              `}
-              onClick={() => onFlagClick?.(flag)}
-              role="button"
-              tabIndex={0}
-              aria-label={`Clinical flag: ${flag.message}`}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  onFlagClick?.(flag);
-                }
-              }}
-            >
-              <div className="flex items-start gap-3">
-                <span className="text-lg flex-shrink-0 mt-0.5">
-                  {getTypeIcon(flag.type)}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm leading-relaxed">
-                    {flag.message}
-                  </p>
-                  <p className="text-xs opacity-75 mt-1 flex items-center gap-1">
-                    <span>🕒</span>
-                    {formatTimestamp(flag.timestamp)}
-                  </p>
+      {flags.length === 0 ? (
+        <div className="rounded-md border border-dashed border-gray-200 bg-gray-50 py-6 text-center text-sm text-gray-500">
+          No clinical flags.
+        </div>
+      ) : (
+        <ul className="space-y-2" role="list" aria-label="Clinical flag list">
+          {flags.map(flag => (
+            <li key={flag.id}>
+              <button
+                type="button"
+                onClick={() => onFlagClick?.(flag)}
+                className={`w-full text-left rounded-md border px-3 py-2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/50 ${getTypeStyles(flag.type)} hover:bg-white/60`}
+                aria-label={`Flag ${flag.type}: ${flag.message}`}
+              >
+                <div className="flex items-start gap-3">
+                  <span className="mt-0.5 text-base" aria-hidden>{getTypeIcon(flag.type)}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium leading-snug">{flag.message}</p>
+                    <p className="mt-1 text-[11px] text-gray-600/80 flex items-center gap-1"><span aria-hidden>🕒</span>{formatTimestamp(flag.timestamp)}</p>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))
-        )}
-      </div>
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
 
-      {/* Footer */}
-      <div className="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-500 text-center">
-        <span className="inline-flex items-center gap-1">
-          <span>⚡</span>
-          Powered by Clinical Flags MFE
-        </span>
-      </div>
-    </div>
+      <footer className="mt-4 border-t pt-3">
+        <p className="text-[11px] text-gray-500 text-center">Isolated micro-frontend component</p>
+      </footer>
+    </section>
   );
 };
 
